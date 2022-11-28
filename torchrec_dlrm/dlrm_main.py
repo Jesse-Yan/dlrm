@@ -704,7 +704,7 @@ def main(argv: List[str]) -> None:
     }
     sharders = [
         EmbeddingBagCollectionSharder(
-            fused_params=fused_params, variable_batch_size=True
+            fused_params=fused_params,
         ),
     ]
 

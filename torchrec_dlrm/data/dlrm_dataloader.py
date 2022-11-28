@@ -54,7 +54,7 @@ def _get_in_memory_dataloader(
         [os.path.join(dir_name, f"torchrec_sparse_v1.npy")],
         [os.path.join(dir_name, f"torchrec_labels.npy")],
     ]
-    batch_size =  args.batch_size
+    batch_size = args.batch_size
     dataloader = DataLoader(
         InMemoryBinaryCriteoIterDataPipe(
             stage,
@@ -107,4 +107,5 @@ def get_dataloader(args: argparse.Namespace, backend: str, stage: str) -> DataLo
     ):
         return _get_random_dataloader(args)
     else:
-        return _get_in_memory_dataloader(args, stage)
+        # return _get_in_memory_dataloader(args, stage)
+        return _get_random_dataloader(args)
