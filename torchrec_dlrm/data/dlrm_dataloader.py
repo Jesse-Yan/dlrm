@@ -49,22 +49,12 @@ def _get_in_memory_dataloader(
     stage: str,
 ) -> DataLoader:
     dir_name = args.in_memory_binary_criteo_path
-    if stage == "train":
-        stage_files: List[List[str]] = [
-            [os.path.join(dir_name, f"day_{i}_dense.npy") for i in range(DAYS-1)],
-            [os.path.join(dir_name, f"day_{i}_sparse.npy") for i in range(DAYS-1)],
-            [os.path.join(dir_name, f"day_{i}_labels.npy") for i in range(DAYS-1)],
-        ]
-    elif stage in ["val", "test"]:
-        stage_files: List[List[str]] = [
-            [os.path.join(dir_name, f"day_{DAYS-1}_dense.npy")],
-            [os.path.join(dir_name, f"day_{DAYS-1}_sparse.npy")],
-            [os.path.join(dir_name, f"day_{DAYS-1}_labels.npy")],
-        ]
-    if stage in ["val", "test"] and args.test_batch_size is not None:
-        batch_size = args.test_batch_size
-    else:
-        batch_size =  args.batch_size
+    stage_files: List[List[str]] = [
+        [os.path.join(dir_name, f"torchrec_dense.npy")],
+        [os.path.join(dir_name, f"torchrec_sparse_v1.npy")],
+        [os.path.join(dir_name, f"torchrec_labels.npy")],
+    ]
+    batch_size =  args.batch_size
     dataloader = DataLoader(
         InMemoryBinaryCriteoIterDataPipe(
             stage,
