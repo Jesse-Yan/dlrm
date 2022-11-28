@@ -419,7 +419,7 @@ def _train(
         None.
     """
     train_pipeline._model.train()
-
+    print("Called Train")
     # Because TrainPipelineSparseDist buffer batches internally, we load in
     # TRAIN_PIPELINE_STAGES - 1 batches from the next_iterator into the buffers so that
     # when train_val_test switches to the next phase, train_pipeline will start
@@ -444,6 +444,7 @@ def _train(
     if is_rank_zero:
         pbar = tqdm(iter(int, 1), desc=f"Epoch {epoch}", disable=False)
     for it in itertools.count():
+        print("iter tools")
         try:
             if is_rank_zero:
                 if print_lr:
