@@ -441,62 +441,60 @@ def _train(
     if limit_train_batches is not None:
         num_batches = min(limit_train_batches, num_batches)
     is_rank_zero = dist.get_rank() == 0
-    if is_rank_zero:
-        pbar = tqdm(iter(int, 1), desc=f"Epoch {epoch}", disable=False)
+    # if is_rank_zero:
+    # pbar = tqdm(iter(int, 1), desc=f"Epoch {epoch}", disable=False)
     for it in itertools.count():
         print("iter tools")
-        try:
-            if is_rank_zero:
-                if print_lr:
-                    for i, g in enumerate(train_pipeline._optimizer.param_groups):
-                        print(f"lr: {it} {i} {g['lr']:.6f}")
-            train_pipeline.progress(combined_iterator)
-            lr_scheduler.step()
-            if change_lr and (
-                (it * batch_size + samples_per_trainer * epoch)
-                / samples_per_trainer_across_epochs
-                > lr_change_point
-            ):
-                print(f"Changing learning rate to: {lr_after_change_point}")
-                optimizer = train_pipeline._optimizer
-                lr = lr_after_change_point
-                for g in optimizer.param_groups:
-                    g["lr"] = lr
-            if is_rank_zero:
-                pbar.update(1)
-            if (
-                validation_freq_within_epoch
-                and it % validation_freq_within_epoch
-                == validation_freq_within_epoch - (TRAIN_PIPELINE_STAGES - 1)
-                and it < num_batches - (TRAIN_PIPELINE_STAGES - 1)
-            ):
-                combined_iterator = itertools.chain(
-                    itertools.islice(
-                        iter(within_epoch_val_dataloader), TRAIN_PIPELINE_STAGES - 1
-                    ),
-                    combined_iterator,
-                )
-            if (
-                validation_freq_within_epoch
-                and it > 0
-                and it % validation_freq_within_epoch == 0
-            ):
-                _evaluate(
-                    limit_val_batches,
-                    train_pipeline,
-                    itertools.islice(
-                        iter(within_epoch_val_dataloader),
-                        TRAIN_PIPELINE_STAGES - 1,
-                        None,
-                    ),
-                    iterator,
-                    "val",
-                )
-                train_pipeline._model.train()
-        except StopIteration:
-            if is_rank_zero:
-                print("Total number of iterations:", it)
-            break
+        for i, g in enumerate(train_pipeline._optimizer.param_groups):
+            print(f"lr: {it} {i} {g['lr']:.6f}")
+        train_pipeline.progress(combined_iterator)
+        print("LR scheduler")
+        lr_scheduler.step()
+        if change_lr and (
+            (it * batch_size + samples_per_trainer * epoch)
+            / samples_per_trainer_across_epochs
+            > lr_change_point
+        ):
+            print(f"Changing learning rate to: {lr_after_change_point}")
+            optimizer = train_pipeline._optimizer
+            lr = lr_after_change_point
+            for g in optimizer.param_groups:
+                g["lr"] = lr
+        # if is_rank_zero:
+        # pbar.update(1)
+        if (
+            validation_freq_within_epoch
+            and it % validation_freq_within_epoch
+            == validation_freq_within_epoch - (TRAIN_PIPELINE_STAGES - 1)
+            and it < num_batches - (TRAIN_PIPELINE_STAGES - 1)
+        ):
+            combined_iterator = itertools.chain(
+                itertools.islice(
+                    iter(within_epoch_val_dataloader), TRAIN_PIPELINE_STAGES - 1
+                ),
+                combined_iterator,
+            )
+        if (
+            validation_freq_within_epoch
+            and it > 0
+            and it % validation_freq_within_epoch == 0
+        ):
+            _evaluate(
+                limit_val_batches,
+                train_pipeline,
+                itertools.islice(
+                    iter(within_epoch_val_dataloader),
+                    TRAIN_PIPELINE_STAGES - 1,
+                    None,
+                ),
+                iterator,
+                "val",
+            )
+            train_pipeline._model.train()
+        # except StopIteration:
+        # if is_rank_zero:
+        # print("Total number of iterations:", it)
+        # break
 
 
 @dataclass
