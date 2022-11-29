@@ -723,7 +723,7 @@ def main(argv: List[str]) -> None:
         )
     ]
 
-    shard_plan = planner.collective_plan(module, sharders, dist.group.WORLD)
+    shard_plan = planner.collective_plan(train_model, sharders, dist.group.WORLD)
     print("Rank {}".format(dist.get_rank()))
     print("Plan {}".format(shard_plan))
     # planner = EmbeddingShardingPlanner(topology=topology)
