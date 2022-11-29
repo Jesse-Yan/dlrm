@@ -107,5 +107,5 @@ def get_dataloader(args: argparse.Namespace, backend: str, stage: str) -> DataLo
     ):
         return _get_random_dataloader(args)
     else:
-        # return _get_in_memory_dataloader(args, stage)
-        return _get_random_dataloader(args)
+        return _get_in_memory_dataloader(args, stage)
+        # return _get_random_dataloader(args)

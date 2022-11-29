@@ -33,6 +33,7 @@ from torchrec.models.dlrm import DLRM, DLRMTrain
 from torchrec.modules.embedding_configs import EmbeddingBagConfig
 from torchrec.optim.keyed import CombinedOptimizer, KeyedOptimizerWrapper
 from tqdm import tqdm
+from torchrec.distributed.planner import EmbeddingShardingPlanner, Topology
 
 # OSS import
 try:
@@ -611,7 +612,7 @@ def main(argv: List[str]) -> None:
     rank = int(os.environ["LOCAL_RANK"])
     if torch.cuda.is_available():
         device: torch.device = torch.device(f"cuda:{rank}")
-        backend = "nccl"
+        backend = "gloo"
         torch.cuda.set_device(device)
     else:
         device: torch.device = torch.device("cpu")
@@ -707,6 +708,7 @@ def main(argv: List[str]) -> None:
         ),
     ]
 
+    # planner = EmbeddingShardingPlanner(topology=topology)
     model = DistributedModelParallel(
         module=train_model,
         device=device,
