@@ -707,12 +707,25 @@ def main(argv: List[str]) -> None:
         if args.adagrad
         else OptimType.EXACT_SGD,
     }
+    # sharders = [
+    # EmbeddingBagCollectionSharder(
+    # fused_params=fused_params,
+    # ),
+    # ]
+    topology = Topology(world_size=dist.get_world_size(), compute_device="cuda")
+    planner = EmbeddingShardingPlanner(topology=topology)
     sharders = [
-        EmbeddingBagCollectionSharder(
-            fused_params=fused_params,
-        ),
+        cast(
+            ModuleSharder[nn.Module],
+            EmbeddingBagCollectionSharder(
+                fused_params=fused_params,
+            ),
+        )
     ]
 
+    shard_plan = planner.collective_plan(module, sharders, dist.group.WORLD)
+    print("Rank {}".format(dist.get_rank()))
+    print("Plan {}".format(shard_plan))
     # planner = EmbeddingShardingPlanner(topology=topology)
     model = DistributedModelParallel(
         module=train_model,
