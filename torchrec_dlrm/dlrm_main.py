@@ -612,6 +612,7 @@ def main(argv: List[str]) -> None:
     rank = int(os.environ["LOCAL_RANK"])
     if torch.cuda.is_available():
         device: torch.device = torch.device(f"cuda:{rank}")
+        # backend = "nccl"
         backend = "gloo"
         torch.cuda.set_device(device)
     else:
