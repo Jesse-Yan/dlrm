@@ -11,6 +11,7 @@ import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import cast, Iterator, List, Optional
+import time
 
 import torch
 import torchmetrics as metrics
