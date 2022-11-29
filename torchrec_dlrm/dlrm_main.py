@@ -445,7 +445,8 @@ def _train(
     # if is_rank_zero:
     # pbar = tqdm(iter(int, 1), desc=f"Epoch {epoch}", disable=False)
     for it in itertools.count():
-        print("iter tools")
+        start_time = time.time()
+        print("iter tools {}".format(it))
         for i, g in enumerate(train_pipeline._optimizer.param_groups):
             print(f"lr: {it} {i} {g['lr']:.6f}")
         train_pipeline.progress(combined_iterator)
@@ -492,6 +493,8 @@ def _train(
                 "val",
             )
             train_pipeline._model.train()
+        torch.cuda.synchronize()
+        print("End time {}".format(time.time() - start_time))
         # except StopIteration:
         # if is_rank_zero:
         # print("Total number of iterations:", it)
