@@ -745,18 +745,18 @@ def main(argv: List[str]) -> None:
     print("Rank {}".format(dist.get_rank()))
     print("Plan {}".format(shard_plan))
     # planner = EmbeddingShardingPlanner(topology=topology)
-    # model = DistributedModelParallel(
-    # module=train_model,
-    # env=ShardingEnv.from_process_group(dist.group.WORLD),
-    # device=device,
-    # sharders=sharders,
-    # plan=shard_plan,
-    # )
     model = DistributedModelParallel(
         module=train_model,
+        env=ShardingEnv.from_process_group(dist.group.WORLD),
         device=device,
-        sharders=cast(List[ModuleSharder[nn.Module]], sharders),
+        sharders=sharders,
+        plan=shard_plan,
     )
+    # model = DistributedModelParallel(
+    # module=train_model,
+    # device=device,
+    # sharders=cast(List[ModuleSharder[nn.Module]], sharders),
+    # )
 
     print("Model plan {}".format(model._plan))
 
