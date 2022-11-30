@@ -721,7 +721,8 @@ def main(argv: List[str]) -> None:
         constraint = {
             f"t_{feature_name}": ParameterConstraints(
                 # sharding_types=[ShardingType.TABLE_WISE.value]
-                sharding_types=[ShardingType.DATA_PARALLEL.value]
+                # sharding_types=[ShardingType.DATA_PARALLEL.value]
+                sharding_types=[ShardingType.ROW_WISE.value]
             )
             for feature_idx, feature_name in enumerate(DEFAULT_CAT_NAMES)
         }
