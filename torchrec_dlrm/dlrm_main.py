@@ -718,7 +718,7 @@ def main(argv: List[str]) -> None:
     def generate_constraints():
         constraint = {
             f"t_{feature_name}": ParameterConstraints(
-                sharding_types=ShardingType.TABLE_WISE
+                sharding_types=[ShardingType.TABLE_WISE.value]
             )
             for feature_idx, feature_name in enumerate(DEFAULT_CAT_NAMES)
         }
@@ -731,9 +731,7 @@ def main(argv: List[str]) -> None:
     sharders = [
         cast(
             ModuleSharder[nn.Module],
-            EmbeddingBagCollectionSharder(
-                fused_params=fused_params,
-            ),
+            EmbeddingBagCollectionSharder(),
         )
     ]
 
