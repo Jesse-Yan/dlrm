@@ -51,7 +51,7 @@ def _get_in_memory_dataloader(
     dir_name = args.in_memory_binary_criteo_path
     stage_files: List[List[str]] = [
         [os.path.join(dir_name, f"torchrec_dense.npy")],
-        [os.path.join(dir_name, f"torchrec_sparse_v1.npy")],
+        [os.path.join(dir_name, f"torchrec_sparse.npy")],
         [os.path.join(dir_name, f"torchrec_labels.npy")],
     ]
     batch_size = args.batch_size
