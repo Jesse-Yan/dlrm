@@ -37,6 +37,7 @@ from tqdm import tqdm
 from torchrec.distributed.planner import EmbeddingShardingPlanner, Topology
 from torchrec.distributed.types import ShardingType
 from torchrec.distributed.planner.types import ParameterConstraints
+from torchrec.distributed.types import ShardingEnv
 
 # OSS import
 try:
