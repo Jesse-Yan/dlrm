@@ -741,6 +741,7 @@ def main(argv: List[str]) -> None:
     # planner = EmbeddingShardingPlanner(topology=topology)
     model = DistributedModelParallel(
         module=train_model,
+        env=ShardingEnv.from_process_group(dist.group.WORLD),
         device=device,
         sharders=sharders,
         plan=shard_plan,
