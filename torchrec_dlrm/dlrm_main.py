@@ -617,6 +617,7 @@ def main(argv: List[str]) -> None:
         ), "--multi_hot_sizes must be a comma delimited list the same size as the number of embedding tables."
 
     rank = int(os.environ["LOCAL_RANK"])
+    print("Local rank {}".format(rank))
     if torch.cuda.is_available():
         device: torch.device = torch.device(f"cuda:{rank}")
         # backend = "nccl"
@@ -719,7 +720,8 @@ def main(argv: List[str]) -> None:
     def generate_constraints():
         constraint = {
             f"t_{feature_name}": ParameterConstraints(
-                sharding_types=[ShardingType.TABLE_WISE.value]
+                # sharding_types=[ShardingType.TABLE_WISE.value]
+                sharding_types=[ShardingType.DATA_PARALLEL.value]
             )
             for feature_idx, feature_name in enumerate(DEFAULT_CAT_NAMES)
         }
