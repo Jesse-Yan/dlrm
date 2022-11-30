@@ -35,6 +35,8 @@ from torchrec.modules.embedding_configs import EmbeddingBagConfig
 from torchrec.optim.keyed import CombinedOptimizer, KeyedOptimizerWrapper
 from tqdm import tqdm
 from torchrec.distributed.planner import EmbeddingShardingPlanner, Topology
+from torchrec.distributed.types import ShardingType
+from torchrec.distributed.planner.types import ParameterConstraints
 
 # OSS import
 try:
@@ -712,8 +714,20 @@ def main(argv: List[str]) -> None:
     # fused_params=fused_params,
     # ),
     # ]
+
+    def generate_constraints():
+        constraint = {
+            f"t_{feature_name}": ParameterConstraints(
+                sharding_types=ShardingType.TABLE_WISE
+            )
+            for feature_idx, feature_name in enumerate(DEFAULT_CAT_NAMES)
+        }
+        return constraint
+
     topology = Topology(world_size=dist.get_world_size(), compute_device="cuda")
-    planner = EmbeddingShardingPlanner(topology=topology)
+    planner = EmbeddingShardingPlanner(
+        topology=topology, constraint=generate_constraints()
+    )
     sharders = [
         cast(
             ModuleSharder[nn.Module],
@@ -730,7 +744,8 @@ def main(argv: List[str]) -> None:
     model = DistributedModelParallel(
         module=train_model,
         device=device,
-        sharders=cast(List[ModuleSharder[nn.Module]], sharders),
+        sharders=sharders,
+        plan=shard_plan,
     )
 
     def optimizer_with_params():
