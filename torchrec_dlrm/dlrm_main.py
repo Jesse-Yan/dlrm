@@ -746,7 +746,7 @@ def main(argv: List[str]) -> None:
     model = DistributedModelParallel(
         module=train_model,
         env=ShardingEnv.from_process_group(dist.group.WORLD),
-        device=device,
+        #    device=device,
         sharders=sharders,
         plan=shard_plan,
     )
