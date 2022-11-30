@@ -726,7 +726,7 @@ def main(argv: List[str]) -> None:
 
     topology = Topology(world_size=dist.get_world_size(), compute_device="cuda")
     planner = EmbeddingShardingPlanner(
-        topology=topology, constraint=generate_constraints()
+        topology=topology, constraints=generate_constraints()
     )
     sharders = [
         cast(
