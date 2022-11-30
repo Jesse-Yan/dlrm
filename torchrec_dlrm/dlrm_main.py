@@ -728,7 +728,9 @@ def main(argv: List[str]) -> None:
         }
         return constraint
 
-    topology = Topology(world_size=dist.get_world_size(), compute_device="cuda")
+    topology = Topology(
+        local_world_size=1, world_size=dist.get_world_size(), compute_device="cuda"
+    )
     planner = EmbeddingShardingPlanner(
         topology=topology, constraints=generate_constraints()
     )
