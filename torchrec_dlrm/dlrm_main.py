@@ -25,6 +25,7 @@ from torchrec.datasets.criteo import (
     DEFAULT_INT_NAMES,
     TOTAL_TRAINING_SAMPLES,
 )
+import datetime
 import logging
 from torchrec.datasets.utils import Batch
 from torchrec.distributed import TrainPipelineSparseDist
