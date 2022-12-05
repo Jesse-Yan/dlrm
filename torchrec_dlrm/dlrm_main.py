@@ -812,7 +812,7 @@ def main(argv: List[str]) -> None:
 
 if __name__ == "__main__":
     now = datetime.now().strftime("%H:%M_%B_%d_%Y")
-    filename = f"training_worker_{os.environ['RANK']}_{now}_{loss}.log"
+    filename = f"training_worker_{os.environ['RANK']}_{now}_loss.log"
     logging.basicConfig(filename=filename)
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
