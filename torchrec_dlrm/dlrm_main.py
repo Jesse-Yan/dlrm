@@ -25,6 +25,7 @@ from torchrec.datasets.criteo import (
     DEFAULT_INT_NAMES,
     TOTAL_TRAINING_SAMPLES,
 )
+import logger
 from torchrec.datasets.utils import Batch
 from torchrec.distributed import TrainPipelineSparseDist
 from torchrec.distributed.embeddingbag import EmbeddingBagCollectionSharder
@@ -214,7 +215,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     parser.add_argument(
         "--learning_rate",
         type=float,
-        default=15.0,
+        default=0.01,
         help="Learning rate.",
     )
     parser.add_argument(
@@ -453,7 +454,8 @@ def _train(
         print("iter tools {}".format(it))
         for i, g in enumerate(train_pipeline._optimizer.param_groups):
             print(f"lr: {it} {i} {g['lr']:.6f}")
-        train_pipeline.progress(combined_iterator)
+        loss_val, _, _ = train_pipeline.progress(combined_iterator)
+        logger.info("{}".format(loss_val))
         print("LR scheduler")
         lr_scheduler.step()
         if change_lr and (
@@ -808,4 +810,10 @@ def main(argv: List[str]) -> None:
 
 
 if __name__ == "__main__":
+    now = datetime.now().strftime("%H:%M_%B_%d_%Y")
+    filename = f"training_worker_{os.environ['RANK']}_{now}_{loss}.log"
+    logging.basicConfig(filename=filename)
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    # logger.info(args)
     main(sys.argv[1:])
